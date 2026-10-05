@@ -43,8 +43,8 @@ export default function ColumnView({
     <section
       ref={setNodeRef}
       style={{ order: position }}
-      className={`flex w-72 shrink-0 flex-col rounded-xl bg-slate-100/80 p-3 ${
-        isOver ? "ring-2 ring-indigo-300" : ""
+      className={`flex w-72 shrink-0 flex-col rounded-2xl border border-line bg-sunken p-3 transition-shadow ${
+        isOver ? "border-accent ring-2 ring-accent/25" : ""
       }`}
     >
       <header className="mb-3 flex items-center gap-2">
@@ -61,12 +61,14 @@ export default function ColumnView({
                 setEditing(false);
               }
             }}
-            className="flex-1 rounded border border-slate-300 px-2 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-200"
+            className="flex-1 rounded border border-line-strong px-2 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-accent-soft"
           />
         ) : (
           <>
-            <h3 className="flex-1 truncate text-sm font-semibold text-slate-700">{name}</h3>
-            <span className="rounded-full bg-white px-2 py-0.5 text-xs text-slate-500">{cards.length}</span>
+            <h3 className="font-mono flex-1 truncate text-xs font-semibold uppercase tracking-wider text-muted">
+              {name}
+            </h3>
+            <span className="rounded-full bg-raised px-2 py-0.5 font-mono text-xs text-muted">{cards.length}</span>
             <button
               type="button"
               onClick={() => {
@@ -75,7 +77,7 @@ export default function ColumnView({
               }}
               aria-label={`Rename ${name}`}
               disabled={isSaving}
-              className="rounded p-1 text-slate-400 hover:bg-white hover:text-slate-700"
+              className="rounded p-1 text-muted hover:bg-raised hover:text-body"
             >
               <Pencil size={13} />
             </button>
@@ -94,7 +96,7 @@ export default function ColumnView({
       <button
         type="button"
         onClick={() => onAddCard(id)}
-        className="mt-3 flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-500 hover:bg-white hover:text-slate-800"
+        className="mt-3 flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-muted hover:bg-raised hover:text-strong"
       >
         <Plus size={14} /> Add card
       </button>

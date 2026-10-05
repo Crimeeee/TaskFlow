@@ -55,25 +55,25 @@ export default function InviteMemberModal({ open, members, isSaving, onClose, on
           placeholder="teammate@example.com"
           autoFocus
         />
-        <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+        <label className="flex flex-col gap-1 text-sm font-medium text-body">
           Role
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as InviteRole)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-normal focus:border-indigo-500 focus:outline-none"
+            className="rounded-lg border border-line-strong bg-raised px-3 py-2 text-sm font-normal focus:border-accent focus:outline-none"
           >
             <option value="MEMBER">Member</option>
             <option value="ADMIN">Admin</option>
           </select>
         </label>
         {members.length > 0 ? (
-          <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+          <ul className="divide-y divide-slate-100 rounded-lg border border-line">
             {members.map((m) => (
               <li key={m.id} className="flex items-center justify-between px-3 py-2 text-sm">
-                <span className="truncate text-slate-700">
-                  {m.name} <span className="text-slate-400">· {m.email}</span>
+                <span className="truncate text-body">
+                  {m.name} <span className="text-muted">· {m.email}</span>
                 </span>
-                <span className="ml-2 shrink-0 text-xs font-medium text-slate-500">{m.role}</span>
+                <span className="ml-2 shrink-0 text-xs font-medium text-muted">{m.role}</span>
               </li>
             ))}
           </ul>

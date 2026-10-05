@@ -134,11 +134,11 @@ export default function BoardPage() {
     <div className="flex h-full flex-col gap-5">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <Link to="/" className="mb-1 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800">
+          <Link to="/" className="mb-1 inline-flex items-center gap-1 text-sm text-muted hover:text-strong">
             <ArrowLeft size={14} /> All teams
           </Link>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{board?.name ?? "Board"}</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-strong">{board?.name ?? "Board"}</h1>
+          <p className="text-sm text-muted">
             {board ? `${board.team.name} - your role: ${board.team.role}` : "Loading board"}
           </p>
         </div>
@@ -207,8 +207,8 @@ export default function BoardPage() {
             </DragOverlay>
           </DndContext>
 
-          <aside className="w-full shrink-0 rounded-xl border border-slate-200 bg-white p-4 xl:w-80">
-            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+          <aside className="w-full shrink-0 rounded-xl border border-line bg-raised p-4 xl:w-80">
+            <h2 className="font-mono mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted">
               <History size={16} /> Activity
             </h2>
             <div className="max-h-96 overflow-y-auto">

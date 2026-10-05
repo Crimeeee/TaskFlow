@@ -28,10 +28,10 @@ export default function ActivityFeed({ activities, isLoading }: ActivityFeedProp
     <ol className="flex flex-col gap-3">
       {activities.map((activity) => (
         <li key={activity.id} className="flex gap-3">
-          <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-indigo-400" />
+          <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent" />
           <div className="min-w-0">
-            <p className="text-sm text-slate-700">{activity.message}</p>
-            <p className="text-xs text-slate-400">{relative(activity.createdAt)}</p>
+            <p className="text-sm text-body">{activity.message}</p>
+            <p className="text-xs text-muted">{relative(activity.createdAt)}</p>
           </div>
         </li>
       ))}

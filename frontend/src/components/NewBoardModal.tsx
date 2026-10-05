@@ -52,7 +52,7 @@ export default function NewBoardModal({ open, teamId, isSaving, onClose, onSubmi
           placeholder="Sprint 12"
           autoFocus
         />
-        <p className="text-xs text-slate-500">A board starts with four default columns.</p>
+        <p className="text-xs text-muted">A board starts with four default columns.</p>
       </form>
     </Modal>
   );

@@ -29,8 +29,8 @@ export default function CardItem({ card, onEdit, onDelete, disabled = false }: C
     <div
       ref={setNodeRef}
       style={style}
-      className={`group rounded-xl border border-slate-200 bg-white p-3 shadow-sm ${
-        isDragging ? "z-10 rotate-1 opacity-80 shadow-lg" : ""
+      className={`group rounded-xl border border-line bg-raised p-3 transition-all hover:border-line-strong ${
+        isDragging ? "z-10 rotate-1 opacity-90 shadow-xl shadow-black/20" : ""
       }`}
     >
       <div className="flex items-start gap-2">
@@ -39,14 +39,14 @@ export default function CardItem({ card, onEdit, onDelete, disabled = false }: C
           aria-label={`Move ${card.title}`}
           {...attributes}
           {...listeners}
-          className="mt-0.5 cursor-grab touch-none rounded p-0.5 text-slate-300 hover:text-slate-500 active:cursor-grabbing"
+          className="mt-0.5 cursor-grab touch-none rounded p-0.5 text-muted hover:text-muted active:cursor-grabbing"
         >
           <GripVertical size={14} />
         </button>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-slate-800">{card.title}</p>
+          <p className="text-sm font-semibold leading-snug text-strong">{card.title}</p>
           {card.description ? (
-            <p className="mt-1 line-clamp-3 text-xs text-slate-500">{card.description}</p>
+            <p className="mt-1 line-clamp-3 text-xs text-muted">{card.description}</p>
           ) : null}
         </div>
       </div>
@@ -55,7 +55,9 @@ export default function CardItem({ card, onEdit, onDelete, disabled = false }: C
         {card.dueDate ? (
           <span
             className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ${
-              isOverdue(card) ? "bg-rose-50 text-rose-600" : "bg-slate-100 text-slate-600"
+              isOverdue(card)
+                ? "bg-rose-500/10 text-rose-600 dark:text-rose-400"
+                : "bg-sunken text-body"
             }`}
           >
             <CalendarClock size={12} /> {formatDate(card.dueDate)}
@@ -67,7 +69,7 @@ export default function CardItem({ card, onEdit, onDelete, disabled = false }: C
           type="button"
           onClick={() => onEdit(card)}
           aria-label={`Edit ${card.title}`}
-          className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+          className="rounded p-1 text-muted hover:bg-sunken hover:text-body"
         >
           <Pencil size={14} />
         </button>
@@ -75,7 +77,7 @@ export default function CardItem({ card, onEdit, onDelete, disabled = false }: C
           type="button"
           onClick={() => onDelete(card)}
           aria-label={`Delete ${card.title}`}
-          className="rounded p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+          className="rounded p-1 text-muted hover:bg-rose-50 hover:text-rose-600"
         >
           <Trash2 size={14} />
         </button>

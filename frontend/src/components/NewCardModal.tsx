@@ -74,12 +74,12 @@ export default function NewCardModal({ open, card, members, isSaving, onClose, o
           placeholder="Optional details"
         />
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+          <label className="flex flex-col gap-1 text-sm font-medium text-body">
             Assignee
             <select
               value={draft.assigneeId ?? ""}
               onChange={(e) => setDraft({ ...draft, assigneeId: e.target.value || null })}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-normal focus:border-indigo-500 focus:outline-none"
+              className="rounded-lg border border-line-strong bg-raised px-3 py-2 text-sm font-normal focus:border-accent focus:outline-none"
             >
               <option value="">Unassigned</option>
               {members.map((m) => (

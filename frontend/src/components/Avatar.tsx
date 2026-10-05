@@ -1,10 +1,11 @@
+// Shades stay inside the crimson family so avatars never clash with the brand.
 const palette = [
-  "bg-indigo-500",
-  "bg-sky-500",
-  "bg-emerald-500",
-  "bg-amber-500",
-  "bg-rose-500",
-  "bg-violet-500",
+  "bg-accent",
+  "bg-rose-600",
+  "bg-crimson-600",
+  "bg-rose-700",
+  "bg-crimson-500",
+  "bg-crimson-700",
 ];
 
 const initials = (name: string) =>
@@ -31,7 +32,7 @@ export default function Avatar({ name, size = 28, title }: AvatarProps) {
     <span
       title={title ?? name}
       style={{ width: size, height: size, fontSize: Math.round(size * 0.4) }}
-      className={`inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-white ${colorFor(name)}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-on-accent ${colorFor(name)}`}
     >
       {initials(name)}
     </span>

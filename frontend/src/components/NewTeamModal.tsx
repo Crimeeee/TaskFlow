@@ -51,7 +51,7 @@ export default function NewTeamModal({ open, isSaving, onClose, onSubmit }: NewT
           placeholder="Platform team"
           autoFocus
         />
-        <p className="text-xs text-slate-500">You become the owner of this team.</p>
+        <p className="text-xs text-muted">You become the owner of this team.</p>
       </form>
     </Modal>
   );

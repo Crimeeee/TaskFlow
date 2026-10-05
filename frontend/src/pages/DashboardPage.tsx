@@ -15,9 +15,9 @@ import type { Team } from "../lib/types";
 const canInvite = (team: Team) => team.role === "OWNER" || team.role === "ADMIN";
 
 const roleBadge: Record<Team["role"], string> = {
-  OWNER: "bg-indigo-50 text-indigo-700",
+  OWNER: "bg-accent-soft text-accent-text",
   ADMIN: "bg-sky-50 text-sky-700",
-  MEMBER: "bg-slate-100 text-slate-600",
+  MEMBER: "bg-sunken text-body",
 };
 
 export default function DashboardPage() {
@@ -79,8 +79,8 @@ export default function DashboardPage() {
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Dashboard</h1>
-          <p className="text-sm text-slate-500">Your teams and their boards.</p>
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-strong">Dashboard</h1>
+          <p className="text-sm text-muted">Your teams and their boards.</p>
         </div>
         <Button onClick={() => setTeamModalOpen(true)}>
           <Plus size={16} /> New team
@@ -115,17 +115,17 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedTeam(active ? null : team)}
-                  className={`flex w-full flex-col gap-2 rounded-xl border bg-white p-4 text-left shadow-sm transition-colors ${
-                    active ? "border-indigo-400 ring-2 ring-indigo-100" : "border-slate-200 hover:border-slate-300"
+                  className={`flex w-full flex-col gap-2 rounded-xl border bg-raised p-4 text-left shadow-sm transition-colors ${
+                    active ? "border-accent ring-2 ring-accent-soft" : "border-line hover:border-line-strong"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="truncate font-semibold text-slate-800">{team.name}</span>
+                    <span className="truncate font-semibold text-strong">{team.name}</span>
                     <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${roleBadge[team.role]}`}>
                       {team.role}
                     </span>
                   </div>
-                  <span className="text-xs text-slate-500">{active ? "Hide boards" : "Show boards"}</span>
+                  <span className="text-xs text-muted">{active ? "Hide boards" : "Show boards"}</span>
                 </button>
               </li>
             );
@@ -136,7 +136,7 @@ export default function DashboardPage() {
       {selectedTeam ? (
         <section className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-slate-900">{selectedTeam.name} boards</h2>
+            <h2 className="text-lg font-semibold text-strong">{selectedTeam.name} boards</h2>
             <div className="flex flex-wrap gap-2">
               <Button variant="secondary" size="sm" onClick={() => setInviteOpen(true)}>
                 <Users size={16} /> Members
@@ -148,7 +148,7 @@ export default function DashboardPage() {
           </div>
 
           {!canInvite(selectedTeam) ? (
-            <p className="flex items-center gap-2 text-xs text-slate-500">
+            <p className="flex items-center gap-2 text-xs text-muted">
               <Shield size={14} /> Only owners and admins can invite members.
             </p>
           ) : null}
@@ -178,10 +178,10 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => navigate(`/boards/${board.id}`)}
-                  className="flex w-full flex-col gap-1 rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-colors hover:border-indigo-300"
+                  className="flex w-full flex-col gap-1 rounded-xl border border-line bg-raised p-4 text-left shadow-sm transition-colors hover:border-accent"
                 >
-                  <span className="font-semibold text-slate-800">{board.name}</span>
-                  <span className="text-xs text-slate-500">
+                  <span className="font-semibold text-strong">{board.name}</span>
+                  <span className="text-xs text-muted">
                     Created {new Date(board.createdAt).toLocaleDateString()}
                   </span>
                 </button>

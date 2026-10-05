@@ -1,7 +1,74 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", var(--font-sans);
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-ink-950: oklch(0.16 0.02 20);
+  --color-crimson-400: oklch(0.68 0.21 22);
+  --color-crimson-500: oklch(0.6 0.23 24);
+  --color-crimson-600: oklch(0.53 0.23 26);
+  --color-crimson-700: oklch(0.45 0.2 27);
+}
+
+:root {
+  --surface-page: oklch(0.97 0.006 60);
+  --surface-raised: oklch(1 0 0);
+  --surface-sunken: oklch(0.93 0.008 60);
+  --surface-ink: oklch(0.19 0.02 25);
+  --surface-ink-soft: oklch(0.27 0.02 25);
+  --line-soft: oklch(0.9 0.008 60);
+  --line-strong: oklch(0.82 0.01 60);
+  --text-strong: oklch(0.22 0.02 25);
+  --text-body: oklch(0.36 0.015 25);
+  --text-muted: oklch(0.52 0.012 25);
+  --accent: oklch(0.53 0.23 26);
+  --accent-hover: oklch(0.46 0.22 27);
+  --accent-soft: oklch(0.95 0.03 25);
+  --accent-text: oklch(0.45 0.2 27);
+  --accent-bright: oklch(0.62 0.21 24);
+  --on-accent: oklch(0.99 0 0);
+}
+
+.dark {
+  --surface-page: oklch(0.15 0.012 20);
+  --surface-raised: oklch(0.2 0.014 20);
+  --surface-sunken: oklch(0.11 0.012 20);
+  --surface-ink: oklch(0.97 0.005 40);
+  --surface-ink-soft: oklch(0.86 0.006 40);
+  --line-soft: oklch(0.28 0.014 20);
+  --line-strong: oklch(0.36 0.016 20);
+  --text-strong: oklch(0.96 0.004 40);
+  --text-body: oklch(0.85 0.006 40);
+  --text-muted: oklch(0.66 0.01 40);
+  --accent: oklch(0.63 0.22 25);
+  --accent-hover: oklch(0.71 0.2 24);
+  --accent-soft: oklch(0.27 0.06 22);
+  --accent-text: oklch(0.79 0.14 26);
+  --accent-bright: oklch(0.72 0.19 25);
+  --on-accent: oklch(0.98 0.005 30);
+}
+
+@theme inline {
+  --color-page: var(--surface-page);
+  --color-raised: var(--surface-raised);
+  --color-sunken: var(--surface-sunken);
+  --color-ink: var(--surface-ink);
+  --color-ink-soft: var(--surface-ink-soft);
+  --color-line: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+  --color-body: var(--text-body);
+  --color-strong: var(--text-strong);
+  --color-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-text: var(--accent-text);
+  --color-accent-bright: var(--accent-bright);
+  --color-on-accent: var(--on-accent);
 }
 
 html,
@@ -14,10 +81,33 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  background-color: var(--color-slate-50);
-  color: var(--color-slate-900);
+  background-color: var(--surface-page);
+  color: var(--text-body);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 *:focus-visible {
-  outline-color: var(--color-indigo-600);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.surface-grain {
+  background-image: radial-gradient(
+    oklch(0.5 0.02 25 / 0.055) 0.5px,
+    transparent 0.5px
+  );
+  background-size: 4px 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

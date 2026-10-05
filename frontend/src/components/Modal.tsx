@@ -24,7 +24,7 @@ export default function Modal({ open, title, onClose, children, footer, wide = f
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-4">
+    <div className="fixed inset-0 z-40 flex items-end justify-center bg-ink/50 p-0 sm:items-center sm:p-4">
       <div
         className="absolute inset-0"
         onClick={onClose}
@@ -35,17 +35,17 @@ export default function Modal({ open, title, onClose, children, footer, wide = f
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`relative max-h-[90vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl sm:rounded-2xl ${
+        className={`relative max-h-[90vh] w-full overflow-y-auto rounded-t-2xl bg-raised p-5 shadow-xl sm:rounded-2xl ${
           wide ? "sm:max-w-2xl" : "sm:max-w-md"
         }`}
       >
         <div className="mb-4 flex items-start justify-between gap-4">
-          <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+          <h2 className="text-lg font-semibold text-strong">{title}</h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-1 text-muted hover:bg-sunken hover:text-body"
           >
             <X size={18} />
           </button>
