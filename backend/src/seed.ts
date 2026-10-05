@@ -18,8 +18,8 @@ const upsertUser = (name: string, email: string) => {
   return id;
 };
 
-const owner = upsertUser("Dana Ioannou", "owner@taskflow.dev");
-const member = upsertUser("Nikos Papas", "member@taskflow.dev");
+const owner = upsertUser("H. Developer", "owner@taskflow.dev");
+const member = upsertUser("H. Teammate", "member@taskflow.dev");
 
 const teamId = newId();
 db.prepare("INSERT INTO teams (id, name) VALUES (?, ?)").run(teamId, "Website Redesign");
