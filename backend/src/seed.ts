@@ -18,7 +18,7 @@ const upsertUser = (name: string, email: string) => {
   return id;
 };
 
-const owner = upsertUser("H. Developer", "owner@taskflow.dev");
+const owner = upsertUser("Head Developer", "owner@taskflow.dev");
 const member = upsertUser("Developer", "member@taskflow.dev");
 
 const teamId = newId();
