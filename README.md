@@ -1,74 +1,83 @@
 <div align="center">
 
+<img src="public/favicon.svg" width="64" height="64" alt="TaskFlow logo">
+
 # TaskFlow
 
-**A team task tracker built end to end, front end to back end.**
+**A team task tracker, built end to end.**
 
 [![CI](https://github.com/Crimeeee/TaskFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/Crimeeee/TaskFlow/actions/workflows/ci.yml)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Node](https://img.shields.io/badge/Node-24-5FA04E?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-crimson?style=flat-square)](#license)
+[![Express](https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
+[![License](https://img.shields.io/badge/license-MIT-crimson?style=flat-square)](#license)
+
+[Demo](#quick-start) · [Stack](#stack) · [API](#api) · [Design notes](#design-notes) · [Status](#honest-status)
 
 </div>
 
 ---
 
-## What it is
+## The problem
 
-TaskFlow is a small task tracker for teams. You create a team, add boards, and move
-cards across columns. It exists to demonstrate the whole path: a REST API with
-authentication and permissions, a React client that consumes it, tests that prove
-both work, and a pipeline that runs them on every push.
+Most portfolio projects are a CRUD app that anyone could have copied from a tutorial.
+This one is a small product with the parts that actually break in production:
+authentication, per team authorisation, ordering, and a client that stays consistent
+while the server is slow.
 
-I built it end to end, including the database schema, the permission model and the
+Everything here was written by me, including the schema, the permission model and the
 design system.
 
-## Highlights
+## What it does
 
-**Authentication that is actually enforced.** JWT access tokens, passwords hashed with
-bcrypt. Every protected route re-checks team membership on the server, so the client
-cannot reach another team's board by calling the API directly.
+- **Teams** with three roles: `OWNER`, `ADMIN`, `MEMBER`
+- **Boards** with four columns, created automatically with the board
+- **Cards** with title, description, assignee and due date
+- **Drag and drop** to reorder inside a column or move across columns
+- **Activity feed** recording every card and column change
+- **Dark mode** with a custom colour system
 
-**A role model.** `OWNER`, `ADMIN` and `MEMBER`. The team creator is the owner. Owners
-and admins can invite people; members can still create and move cards.
+<p align="center">
+  <em>Screenshots go here after deploy. The app is not public yet.</em>
+</p>
 
-**Drag and drop that holds up.** Cards reorder within a column and move across columns
-using `dnd-kit`. The new position is a midpoint between two neighbours, so a move writes
-one row instead of renumbering the list. The update lands in the React Query cache
-before the request resolves, and rolls back if the request fails.
+## Architecture
 
-**A design system instead of utility soup.** Colours are semantic tokens
-(`bg-page`, `text-body`, `border-line`) defined once in CSS. Switching to dark mode
-adds one class to the root element rather than scattering `dark:` prefixes across
-twenty components.
+```
+┌─────────────────┐        HTTPS / JSON        ┌──────────────────────┐
+│   React 19 SPA  │  ───────────────────────►  │   Express 5 API      │
+│                 │  ◄───────────────────────  │                      │
+│  Tailwind · dnd  │    Authorization: Bearer   │  Zod · JWT · bcrypt  │
+│  TanStack Query  │                            └───────────┬──────────┘
+└─────────────────┘                                        │
+                                                             ▼
+                                              ┌──────────────────────┐
+                                              │  SQLite (node:sqlite)│
+                                              └──────────────────────┘
+```
 
-**Tests where the logic lives.** 26 integration tests drive the real API through HTTP
-and assert on status codes and response bodies, not on mocks.
+```
+users ──< memberships >── teams ──< boards ──< columns ──< cards
+                                  └──< activity
+```
+
+Cards and columns carry a float `position`. A move writes the midpoint between the two
+neighbours instead of renumbering the list, so dragging one card is a single `UPDATE`.
 
 ## Stack
 
-| Layer     | Choice                                                          |
-| --------- | --------------------------------------------------------------- |
-| Frontend  | React 19, TypeScript, Vite, Tailwind CSS 4, TanStack Query, dnd-kit |
-| Backend   | Node 24, Express 5, TypeScript, `node:sqlite`, JWT, bcrypt, Zod  |
-| Tests     | Vitest and Supertest                                             |
-| Infra     | Docker, Docker Compose, GitHub Actions                          |
-
-## Screens
-
-<div align="center">
-
-### Board
-
-Cards move between columns and the activity feed records every change.
-
-### Sign in
-
-The sign-in screen pairs a dark brand panel with the form.
-
-</div>
-
-> Screenshots land here once the app is deployed. See [Deploy](#deploy).
+| Layer | Choice | Why |
+| --- | --- | --- |
+| Frontend | React 19, TypeScript, Vite | Fast iteration, strict types across the API boundary |
+| Styling | Tailwind CSS 4 | Semantic colour tokens, so dark mode is one class on the root |
+| Server state | TanStack Query | Optimistic updates with automatic rollback on failure |
+| Drag and drop | dnd-kit | Accessible primitives, works with touch |
+| Backend | Node 24, Express 5 | Type sharing with the frontend through one language |
+| Database | `node:sqlite` | No native build step, no server to install, plain SQL |
+| Validation | Zod | One schema per route, shared error shape |
+| Tests | Vitest, Supertest | Runs against the real app, no mocked database |
+| CI | GitHub Actions | Typecheck, lint and tests on every push |
 
 ## Quick start
 
@@ -77,91 +86,57 @@ Requires Node 24.
 ```bash
 git clone https://github.com/Crimeeee/TaskFlow.git
 cd TaskFlow
+
+# terminal 1
+cd backend && npm install && npm run seed && npm run dev   # :4000
+
+# terminal 2
+cd frontend && npm install && npm run dev                  # :5173
 ```
 
-### Backend
+Demo accounts created by the seed:
 
-```bash
-cd backend
-npm install
-npm run seed      # demo board with 7 cards, safe to run repeatedly
-npm run dev       # http://localhost:4000
-```
+| Email | Password | Role |
+| --- | --- | --- |
+| `owner@taskflow.dev` | `password123` | Head Developer |
+| `member@taskflow.dev` | `password123` | Developer |
 
-The database is a single SQLite file at `backend/data/taskflow.db`. The schema is
-applied at startup, so there is no migration step to install.
+Or register your own from the sign in screen.
 
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev       # http://localhost:5173
-```
-
-### Demo accounts
-
-Populated by `npm run seed`:
-
-| Email               | Password    | Role          |
-| ------------------- | ----------- | ------------- |
-| owner@taskflow.dev  | password123 | Head Developer |
-| member@taskflow.dev | password123 | Developer     |
-
-You can also register a new account from the sign-in screen.
-
-### Docker
+With Docker:
 
 ```bash
 docker compose up --build
 ```
 
-API on `localhost:4000`, web on `localhost:5173`.
+## Commands
 
-## Your data survives restarts
+| Command | Where | What it does |
+| --- | --- | --- |
+| `npm run dev` | both | dev server with reload |
+| `npm run build` | both | type check, then production build |
+| `npm test` | backend | 26 integration tests |
+| `npm run lint` | frontend | oxlint |
+| `npm run typecheck` | backend | types only, no emit |
+| `npm run seed` | backend | demo data, only if the database is empty |
+| `npm run db:reset` | backend | wipe everything, reload demo data |
 
-Everything lives in `backend/data/taskflow.db`. Stopping the server and starting it
-again keeps your data. There is nothing to re-run.
-
-| Command            | Effect                                              |
-| ------------------ | --------------------------------------------------- |
-| `npm run seed`     | loads demo data only if none exists, deletes nothing |
-| `npm run db:reset` | wipes everything and reloads the demo board          |
-
-## Scripts
-
-**backend/**
-
-| Command             | Effect                              |
-| ------------------- | ----------------------------------- |
-| `npm run dev`       | API with reload on change           |
-| `npm run build`     | compile TypeScript to `dist/`       |
-| `npm test`          | integration tests, once             |
-| `npm run typecheck` | type check without emitting         |
-| `npm run seed`      | load demo data if empty             |
-| `npm run db:reset`  | wipe and reload demo data           |
-
-**frontend/**
-
-| Command         | Effect                      |
-| --------------- | --------------------------- |
-| `npm run dev`   | Vite dev server             |
-| `npm run build` | type check, then build      |
-| `npm run lint`  | oxlint                      |
+Your data lives in `backend/data/taskflow.db`. Restarting the server does not lose it,
+and the seed never deletes anything unless you ask for `db:reset`.
 
 ## API
 
-Full reference with request and response shapes: [API.md](./API.md).
+Base URL `/api`. Everything except register, login and health needs
+`Authorization: Bearer <token>`. Errors are always `{ "error": { "message": string } }`.
 
 ```
-POST   /api/auth/register        POST   /api/teams
-POST   /api/auth/login           GET    /api/teams
-GET    /api/auth/me              GET    /api/teams/:teamId/members
-GET    /api/health               POST   /api/teams/:teamId/members
+POST   /api/auth/register         POST   /api/teams
+POST   /api/auth/login            GET    /api/teams
+GET    /api/auth/me               GET    /api/teams/:teamId/members
+GET    /api/health                POST   /api/teams/:teamId/members
 
-POST   /api/boards               GET    /api/boards?teamId=
-GET    /api/boards/:boardId      GET    /api/boards/:boardId/activity
-
+POST   /api/boards                GET    /api/boards/:boardId
+GET    /api/boards?teamId=        GET    /api/boards/:boardId/activity
 POST   /api/boards/:boardId/columns
 PATCH  /api/columns/:columnId
 POST   /api/columns/:columnId/cards
@@ -169,18 +144,26 @@ PATCH  /api/cards/:cardId
 DELETE /api/cards/:cardId
 ```
 
-Every route except register, login and health requires `Authorization: Bearer <token>`.
-Errors always come back as `{ "error": { "message": string } }`.
+Full reference with request and response shapes: [API.md](./API.md).
 
-## How permissions work
+Authorisation is enforced server side. Every handler re-reads team membership before it
+touches data, so calling the API directly cannot bypass the UI.
 
-A user has a role per team. Any authenticated request is checked against team
-membership before the handler runs, so authorisation does not depend on the client.
+## Design notes
 
-```
-users  ──<  memberships  >──  teams  ──<  boards  ──<  columns  ──<  cards
-                                  └──<  activity
-```
+**Colour tokens, not colour classes.** Every surface is a token defined once in CSS
+(`--surface-page`, `--text-body`, `--line-soft`). Dark mode swaps the token values in
+one block. I first built it with raw Tailwind classes and it took 200 `dark:` prefixes
+to make both themes readable.
+
+**Optimistic drag and drop.** The card moves in the UI before the request is sent. The
+previous cache snapshot is kept and restored if the `PATCH` fails, then a toast
+explains what happened.
+
+**Bugs the tests caught.** Zod validates `.min()` before `.trim()`, so a card titled
+with a single space passed validation and was stored blank. A column route was mounted
+under `/api/boards` while the client called `/api/columns`. Both shipped, both were
+caught by writing the tests.
 
 ## Testing
 
@@ -188,31 +171,42 @@ users  ──<  memberships  >──  teams  ──<  boards  ──<  columns  
 cd backend && npm test
 ```
 
-The suite covers registration and login, duplicate email rejection, bcrypt hashing,
-missing and forged tokens, cross-team access, role checks on invites, the card
-lifecycle, moving a card between columns, ordering by position, and the activity feed.
+26 integration tests drive the real Express app over HTTP and assert on status codes and
+response bodies:
 
-## Deploy
+| Area | Covered |
+| --- | --- |
+| Auth | register, login, duplicate email, short password, bcrypt hashing |
+| Tokens | missing, forged, expired, deleted user |
+| Permissions | cross team reads, role checks on invites, board creation for outsiders |
+| Cards | create, edit, delete, empty title, assignee must be a member |
+| Ordering | move across columns, order by position, reject cross board moves |
+| Activity | card and column events recorded newest first |
 
-Backend on Railway, frontend on Render. The repository ships with a Dockerfile per
-service and a Compose file for local use.
+```
+Tests  26 passed (26)
+Duration  2.96s
+```
 
-Environment variables are documented in [backend/.env.example](./backend/.env.example)
-and [frontend/.env.example](./frontend/.env.example). Set `JWT_SECRET` to a long random
-string in any deployed environment.
+## Honest status
 
-## Things I left unfinished
+What is not done, in the order I would fix it:
 
-Naming them is the point of the exercise.
+1. **No frontend tests.** The React layer is untested. This is the biggest gap.
+2. **No rate limiting** on the auth routes. First thing to add before this ran anywhere public.
+3. **No refresh tokens.** Access tokens last seven days, then you sign in again.
+4. **Position drift.** Midpoint insertion can produce very small gaps after many moves. Needs a periodic rebalance.
+5. **SQLite only.** The queries are plain SQL and would move to Postgres with small changes.
 
-- **No rate limiting** on the auth routes. That is the first thing to add before this
-  ran anywhere public.
-- **Access tokens last seven days** and there is no refresh token flow.
-- **Card positions drift.** Midpoint insertion avoids renumbering but can produce very
-  small gaps after many moves. A periodic rebalance would fix it.
-- **No frontend tests yet.** The backend is covered, the React layer is not.
-- **SQLite only.** The queries are plain SQL and would move to Postgres with small
-  changes, but nothing in the app depends on the SQLite specifics.
+## Project size
+
+| | |
+| --- | --- |
+| Backend source | 776 lines |
+| Frontend source | 2443 lines |
+| Integration tests | 290 lines |
+| Components | 18 |
+| Endpoints | 17 |
 
 ## License
 
