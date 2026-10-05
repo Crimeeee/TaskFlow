@@ -59,7 +59,7 @@ After `npm run seed` in `backend`:
 | Email                | Password      | Role  |
 | -------------------- | ------------- | ----- |
 | owner@taskflow.dev   | password123   | H. Developer |
-| member@taskflow.dev  | password123   | H. Teammate |
+| member@taskflow.dev  | password123   | Developer   |
 
 You can also register a new account from the login screen.
 

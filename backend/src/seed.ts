@@ -6,7 +6,7 @@ import { config } from "./config.js";
 const db = openDb(config.dbFile);
 
 // Reseed from scratch so repeated runs do not duplicate demo data.
-db.exec("DELETE FROM activity; DELETE FROM cards; DELETE FROM columns; DELETE FROM boards; DELETE FROM memberships; DELETE FROM teams;");
+db.exec("DELETE FROM activity; DELETE FROM cards; DELETE FROM columns; DELETE FROM boards; DELETE FROM memberships; DELETE FROM teams; DELETE FROM users;");
 
 const hash = bcrypt.hashSync("password123", 10);
 
@@ -19,7 +19,7 @@ const upsertUser = (name: string, email: string) => {
 };
 
 const owner = upsertUser("H. Developer", "owner@taskflow.dev");
-const member = upsertUser("H. Teammate", "member@taskflow.dev");
+const member = upsertUser("Developer", "member@taskflow.dev");
 
 const teamId = newId();
 db.prepare("INSERT INTO teams (id, name) VALUES (?, ?)").run(teamId, "Website Redesign");
