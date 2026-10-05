@@ -144,13 +144,25 @@ describe("teams and permissions", () => {
 });
 
 describe("boards, columns and cards", () => {
-  it("creates a board with four default columns", async () => {
+  it("returns the requesting user's role and four default columns", async () => {
     const { owner, board, detail } = await seedBoard();
     expect(board.name).toBe("Board A");
     expect(detail.columns).toHaveLength(4);
     expect(detail.columns[0].name).toBe("To do");
     expect(detail.team.name).toBe("Team A");
-    await request(app).get(`/api/boards/${board.id}`).set(auth(owner.accessToken)).expect(200);
+    expect(detail.team.role).toBe("OWNER");
+
+    const member = await signUp("board-member@test.dev", "Member");
+    await request(app)
+      .post(`/api/teams/${detail.team.id}/members`)
+      .set(auth(owner.accessToken))
+      .send({ email: "board-member@test.dev" })
+      .expect(201);
+    const memberBoard = await request(app)
+      .get(`/api/boards/${board.id}`)
+      .set(auth(member.accessToken))
+      .expect(200);
+    expect(memberBoard.body.team.role).toBe("MEMBER");
   });
 
   it("creates, edits and deletes a card", async () => {

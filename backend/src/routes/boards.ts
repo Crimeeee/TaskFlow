@@ -56,7 +56,8 @@ boardsRouter.get("/:boardId", (req, res, next) => {
     .prepare("SELECT id, team_id, name, created_at FROM boards WHERE id = ?")
     .get(req.params.boardId) as { id: string; team_id: string; name: string; created_at: string } | undefined;
   if (!board) return next(notFound("Board not found"));
-  if (!teamRole(req.db, board.team_id, req.user!.id)) return next(forbidden("You are not a member of that team"));
+  const role = teamRole(req.db, board.team_id, req.user!.id);
+  if (!role) return next(forbidden("You are not a member of that team"));
 
   const columns = req.db
     .prepare("SELECT id, board_id AS boardId, name, position FROM columns WHERE board_id = ? ORDER BY position")
@@ -98,7 +99,11 @@ boardsRouter.get("/:boardId", (req, res, next) => {
     name: board.name,
     createdAt: board.created_at,
     columns: withCards,
-    team: { id: board.team_id, name: (req.db.prepare("SELECT name FROM teams WHERE id = ?").get(board.team_id) as { name: string }).name },
+    team: {
+      id: board.team_id,
+      name: (req.db.prepare("SELECT name FROM teams WHERE id = ?").get(board.team_id) as { name: string }).name,
+      role,
+    },
   });
 });
 
