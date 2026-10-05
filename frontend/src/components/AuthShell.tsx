@@ -25,7 +25,7 @@ export default function AuthShell({ title, subtitle, children, footer }: { title
         </span>
 
         <div className="max-w-sm">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent-bright">Team boards</p>
+          <p className="eyebrow !text-accent-bright">Team boards</p>
           <h2 className="font-display mt-3 text-3xl font-bold leading-tight text-white">
             Move the work forward, without the noise.
           </h2>

@@ -15,9 +15,9 @@
 }
 
 :root {
-  --surface-page: oklch(0.97 0.006 60);
+  --surface-page: oklch(0.965 0.005 70);
   --surface-raised: oklch(1 0 0);
-  --surface-sunken: oklch(0.93 0.008 60);
+  --surface-sunken: oklch(0.915 0.01 70);
   --surface-ink: oklch(0.19 0.02 25);
   --surface-ink-soft: oklch(0.27 0.02 25);
   --line-soft: oklch(0.9 0.008 60);
@@ -31,12 +31,16 @@
   --accent-text: oklch(0.45 0.2 27);
   --accent-bright: oklch(0.62 0.21 24);
   --on-accent: oklch(0.99 0 0);
+  --tone-todo: oklch(0.55 0.02 260);
+  --tone-doing: oklch(0.6 0.21 30);
+  --tone-review: oklch(0.72 0.16 80);
+  --tone-done: oklch(0.6 0.14 155);
 }
 
 .dark {
-  --surface-page: oklch(0.15 0.012 20);
-  --surface-raised: oklch(0.2 0.014 20);
-  --surface-sunken: oklch(0.11 0.012 20);
+  --surface-page: oklch(0.165 0.014 20);
+  --surface-raised: oklch(0.235 0.017 22);
+  --surface-sunken: oklch(0.115 0.012 20);
   --surface-ink: oklch(0.97 0.005 40);
   --surface-ink-soft: oklch(0.86 0.006 40);
   --line-soft: oklch(0.28 0.014 20);
@@ -50,6 +54,10 @@
   --accent-text: oklch(0.79 0.14 26);
   --accent-bright: oklch(0.72 0.19 25);
   --on-accent: oklch(0.98 0.005 30);
+  --tone-todo: oklch(0.68 0.04 260);
+  --tone-doing: oklch(0.68 0.19 28);
+  --tone-review: oklch(0.78 0.15 80);
+  --tone-done: oklch(0.72 0.14 155);
 }
 
 @theme inline {
@@ -69,6 +77,10 @@
   --color-accent-text: var(--accent-text);
   --color-accent-bright: var(--accent-bright);
   --color-on-accent: var(--on-accent);
+  --color-tone-todo: var(--tone-todo);
+  --color-tone-doing: var(--tone-doing);
+  --color-tone-review: var(--tone-review);
+  --color-tone-done: var(--tone-done);
 }
 
 html,
@@ -93,6 +105,41 @@ body {
 
 .font-display {
   font-family: var(--font-display);
+}
+
+.drag-lift {
+  cursor: grabbing;
+}
+
+.drag-lift * {
+  cursor: grabbing !important;
+}
+
+.drag-ghost {
+  opacity: 0.35;
+  transform: rotate(2deg) scale(1.02);
+  border-color: var(--accent);
+  box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.45);
+}
+
+/* Column header reads as a label, not body copy. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.ambient-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(60rem 30rem at 15% -10%, color-mix(in oklch, var(--accent) 16%, transparent), transparent 70%),
+    radial-gradient(45rem 25rem at 95% 5%, color-mix(in oklch, var(--tone-review) 10%, transparent), transparent 70%);
 }
 
 .surface-grain {

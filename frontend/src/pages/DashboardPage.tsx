@@ -16,7 +16,7 @@ const canInvite = (team: Team) => team.role === "OWNER" || team.role === "ADMIN"
 
 const roleBadge: Record<Team["role"], string> = {
   OWNER: "bg-accent-soft text-accent-text",
-  ADMIN: "bg-sky-50 text-sky-700",
+  ADMIN: "bg-tone-review/15 text-tone-review",
   MEMBER: "bg-sunken text-body",
 };
 

@@ -1,11 +1,14 @@
+import type { CSSProperties } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { CalendarClock, GripVertical, Pencil, Trash2 } from "lucide-react";
 import Avatar from "./Avatar";
 import type { Card } from "../lib/types";
+import { toneForColumn } from "../lib/board";
 
 interface CardItemProps {
   card: Card;
+  columnName?: string;
   onEdit: (card: Card) => void;
   onDelete: (card: Card) => void;
   disabled?: boolean;
@@ -16,23 +19,30 @@ const isOverdue = (card: Card) => Boolean(card.dueDate) && new Date(card.dueDate
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 
-export default function CardItem({ card, onEdit, onDelete, disabled = false }: CardItemProps) {
+export default function CardItem({ card, columnName = "", onEdit, onDelete, disabled = false }: CardItemProps) {
+  const tone = toneForColumn(columnName);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id,
     disabled,
     data: { card },
   });
 
-  const style = { transform: CSS.Transform.toString(transform), transition };
+  const style: CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    touchAction: "none",
+  };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`group rounded-xl border border-line bg-raised p-3 transition-all hover:border-line-strong ${
-        isDragging ? "z-10 rotate-1 opacity-90 shadow-xl shadow-black/20" : ""
+      className={`group relative overflow-hidden rounded-xl border border-line bg-raised pl-4 pr-3 py-3 transition-all hover:-translate-y-0.5 hover:border-line-strong hover:shadow-lg hover:shadow-black/5 ${
+        isDragging ? "drag-ghost z-10" : ""
       }`}
     >
+      <span aria-hidden className={`absolute inset-y-0 left-0 w-1 ${tone.bar} opacity-70`} />
+
       <div className="flex items-start gap-2">
         <button
           type="button"

@@ -44,3 +44,22 @@ export function applyMove(columns: Column[], cardId: string, targetColumnId: str
     return column;
   });
 }
+
+/**
+ * Visual tone per column so the board reads at a glance instead of one flat colour.
+ * Classes are spelled out in full because the Tailwind scanner cannot see `bg-${tone}`.
+ */
+const TONES = {
+  "tone-done": { bar: "bg-tone-done", text: "text-tone-done" },
+  "tone-review": { bar: "bg-tone-review", text: "text-tone-review" },
+  "tone-doing": { bar: "bg-tone-doing", text: "text-tone-doing" },
+  "tone-todo": { bar: "bg-tone-todo", text: "text-tone-todo" },
+} as const;
+
+export const toneForColumn = (name: string) => {
+  const n = name.toLowerCase();
+  if (/(done|complete|closed|shipped)/.test(n)) return TONES["tone-done"];
+  if (/(review|qa|check|verify)/.test(n)) return TONES["tone-review"];
+  if (/(progress|doing|active|started)/.test(n)) return TONES["tone-doing"];
+  return TONES["tone-todo"];
+};

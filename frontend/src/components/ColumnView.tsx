@@ -4,6 +4,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { Pencil, Plus } from "lucide-react";
 import CardItem from "./CardItem";
 import type { Card } from "../lib/types";
+import { toneForColumn } from "../lib/board";
 
 interface ColumnViewProps {
   id: string;
@@ -29,6 +30,7 @@ export default function ColumnView({
   onRename,
 }: ColumnViewProps) {
   const { setNodeRef, isOver } = useDroppable({ id, data: { type: "column", columnId: id } });
+  const tone = toneForColumn(name);
   const [editing, setEditing] = useState(false);
   const [draftName, setDraftName] = useState(name);
 
@@ -43,10 +45,12 @@ export default function ColumnView({
     <section
       ref={setNodeRef}
       style={{ order: position }}
-      className={`flex w-72 shrink-0 flex-col rounded-2xl border border-line bg-sunken p-3 transition-shadow ${
+      className={`relative flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl border border-line bg-sunken p-3 pt-4 transition-shadow ${
         isOver ? "border-accent ring-2 ring-accent/25" : ""
       }`}
     >
+      <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${tone.bar}`} />
+
       <header className="mb-3 flex items-center gap-2">
         {editing ? (
           <input
@@ -65,10 +69,8 @@ export default function ColumnView({
           />
         ) : (
           <>
-            <h3 className="font-mono flex-1 truncate text-xs font-semibold uppercase tracking-wider text-muted">
-              {name}
-            </h3>
-            <span className="rounded-full bg-raised px-2 py-0.5 font-mono text-xs text-muted">{cards.length}</span>
+            <h3 className="eyebrow flex-1 truncate">{name}</h3>
+            <span className={`rounded-full bg-raised px-2 py-0.5 font-mono text-xs ${tone.text}`}>{cards.length}</span>
             <button
               type="button"
               onClick={() => {
@@ -88,7 +90,7 @@ export default function ColumnView({
       <SortableContext items={cards.map((c) => c.id)} strategy={verticalListSortingStrategy}>
         <div className="flex min-h-12 flex-1 flex-col gap-2">
           {cards.map((card) => (
-            <CardItem key={card.id} card={card} onEdit={onEditCard} onDelete={onDeleteCard} />
+            <CardItem key={card.id} card={card} columnName={name} onEdit={onEditCard} onDelete={onDeleteCard} />
           ))}
         </div>
       </SortableContext>

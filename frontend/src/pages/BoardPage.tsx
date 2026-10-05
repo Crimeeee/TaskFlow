@@ -18,7 +18,7 @@ import CardItem from "../components/CardItem";
 import ColumnView from "../components/ColumnView";
 import EmptyState from "../components/EmptyState";
 import NewCardModal from "../components/NewCardModal";
-import Spinner from "../components/Spinner";
+import { BoardSkeleton } from "../components/Skeleton";
 import { useToast } from "../hooks/useToast";
 import { errorMessage } from "../lib/api";
 import { applyMove, findCard, positionFor, sortByPosition } from "../lib/board";
@@ -144,7 +144,7 @@ export default function BoardPage() {
         </div>
       </header>
 
-      {boardQuery.isLoading ? <Spinner label="Loading board" /> : null}
+      {boardQuery.isLoading ? <BoardSkeleton /> : null}
 
       {boardQuery.isError ? (
         <EmptyState
@@ -208,7 +208,7 @@ export default function BoardPage() {
           </DndContext>
 
           <aside className="w-full shrink-0 rounded-xl border border-line bg-raised p-4 xl:w-80">
-            <h2 className="font-mono mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted">
+            <h2 className="eyebrow mb-3 flex items-center gap-2">
               <History size={16} /> Activity
             </h2>
             <div className="max-h-96 overflow-y-auto">
