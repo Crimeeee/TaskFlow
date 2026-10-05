@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/favicon.svg" width="64" height="64" alt="TaskFlow logo">
+<img src="./docs/logo.svg" width="72" height="72" alt="TaskFlow logo">
 
 # TaskFlow
 
