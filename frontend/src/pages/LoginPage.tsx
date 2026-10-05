@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import { Input } from "../components/Input";
 import { useAuth } from "../context/AuthContext";
 import { errorMessage } from "../lib/api";
+import { PASSWORD_MIN, passwordHint } from "../lib/constants";
 
 interface Errors {
   email?: string;
@@ -27,7 +28,7 @@ export default function LoginPage() {
   const validate = (): Errors => {
     const next: Errors = {};
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) next.email = "Enter a valid email address";
-    if (password.length < 6) next.password = "Password must be at least 6 characters";
+    if (password.length < PASSWORD_MIN) next.password = passwordHint;
     return next;
   };
 

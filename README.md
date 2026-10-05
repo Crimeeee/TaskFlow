@@ -21,7 +21,7 @@ JWT auth and permissions, a React single page app, integration tests and CI.
 
 ## Run it locally
 
-Prerequisites: Node 24 and npm.
+Prerequisites: Node 24 and npm (see `engines` in each package.json).
 
 ```bash
 git clone <your-repo-url>

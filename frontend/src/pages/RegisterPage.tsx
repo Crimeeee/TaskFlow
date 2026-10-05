@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import { Input } from "../components/Input";
 import { useAuth } from "../context/AuthContext";
 import { errorMessage } from "../lib/api";
+import { PASSWORD_MIN, passwordHint } from "../lib/constants";
 
 interface Errors {
   name?: string;
@@ -28,7 +29,7 @@ export default function RegisterPage() {
     const next: Errors = {};
     if (name.trim().length < 2) next.name = "Name must be at least 2 characters";
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) next.email = "Enter a valid email address";
-    if (password.length < 6) next.password = "Password must be at least 6 characters";
+    if (password.length < PASSWORD_MIN) next.password = passwordHint;
     return next;
   };
 
@@ -92,7 +93,7 @@ export default function RegisterPage() {
           value={password}
           error={errors.password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="At least 8 characters"
+          placeholder="At least {PASSWORD_MIN} characters"
         />
         <Button type="submit" isLoading={isSubmitting} className="mt-1 w-full">
           Create account
