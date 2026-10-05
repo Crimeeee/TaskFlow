@@ -34,12 +34,25 @@ cd taskflow
 cd backend
 npm install
 cp .env.example .env      # optional, sensible defaults exist
-npm run seed              # optional demo data
+npm run seed              # optional demo data, safe to repeat
 npm run dev               # http://localhost:4000
 ```
 
 The database is a single SQLite file created at `backend/data/taskflow.db` on first run.
 There is no migration step to install, the schema is applied at startup.
+
+### Restarting does not lose data
+
+Your data lives in `backend/data/taskflow.db`. Stopping the server with Ctrl+C and
+starting it again keeps everything. You do not need to run the seed again.
+
+| Command            | What it does                                              |
+| ------------------ | --------------------------------------------------------- |
+| `npm run seed`     | adds demo data only if none exists, never deletes anything |
+| `npm run db:reset` | wipes everything and reloads the demo data                |
+
+`npm run seed` is safe to repeat. It reports what it kept and leaves existing teams,
+cards and accounts alone. Use `npm run db:reset` when you actually want a clean slate.
 
 ### Frontend
 
@@ -107,7 +120,8 @@ Backend, in `backend/`:
 | `npm test`          | integration tests once                |
 | `npm run test:watch`| tests in watch mode                   |
 | `npm run typecheck` | type check without emitting           |
-| `npm run seed`      | reset and load demo data              |
+| `npm run seed`      | load demo data if the database is empty     |
+| `npm run db:reset` | wipe everything and reload demo data     |
 
 Frontend, in `frontend/`:
 

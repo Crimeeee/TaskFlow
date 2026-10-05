@@ -12,7 +12,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seed": "tsx src/seed.ts",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "db:reset": "tsx src/seed.ts --fresh",
+    "setup": "npm run seed"
   },
   "type": "module",
   "dependencies": {

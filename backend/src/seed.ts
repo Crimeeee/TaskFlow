@@ -5,21 +5,44 @@ import { config } from "./config.js";
 
 const db = openDb(config.dbFile);
 
-// Reseed from scratch so repeated runs do not duplicate demo data.
-db.exec("DELETE FROM activity; DELETE FROM cards; DELETE FROM columns; DELETE FROM boards; DELETE FROM memberships; DELETE FROM teams; DELETE FROM users;");
+// Destructive only on request, so a routine `npm run seed` never wipes real accounts.
+const fresh = process.argv.includes("--fresh");
+if (fresh) {
+  db.exec(
+    "DELETE FROM activity; DELETE FROM cards; DELETE FROM columns; DELETE FROM boards; DELETE FROM memberships; DELETE FROM teams; DELETE FROM users;",
+  );
+}
 
 const hash = bcrypt.hashSync("password123", 10);
 
-const upsertUser = (name: string, email: string) => {
-  const found = db.prepare("SELECT id FROM users WHERE email = ?").get(email) as { id: string } | undefined;
-  if (found) return found.id;
+const ensureUser = (name: string, email: string): string => {
+  const found = db.prepare("SELECT id, name FROM users WHERE email = ?").get(email) as
+    | { id: string; name: string }
+    | undefined;
+  if (found) {
+    if (found.name !== name) db.prepare("UPDATE users SET name = ? WHERE id = ?").run(name, found.id);
+    return found.id;
+  }
   const id = newId();
   db.prepare("INSERT INTO users (id, name, email, password_hash) VALUES (?, ?, ?, ?)").run(id, name, email, hash);
   return id;
 };
 
-const owner = upsertUser("Head Developer", "owner@taskflow.dev");
-const member = upsertUser("Developer", "member@taskflow.dev");
+const owner = ensureUser("Head Developer", "owner@taskflow.dev");
+const member = ensureUser("Developer", "member@taskflow.dev");
+
+const existingTeam = db.prepare("SELECT id FROM teams WHERE name = ?").get("Website Redesign") as
+  | { id: string }
+  | undefined;
+
+if (existingTeam) {
+  const { count } = db
+    .prepare("SELECT COUNT(*) AS count FROM teams")
+    .get() as { count: number };
+  console.log(`Kept ${count} existing team(s). Use "npm run db:reset" to wipe demo data.`);
+  console.log("Demo logins: owner@taskflow.dev / member@taskflow.dev, password: password123");
+  process.exit(0);
+}
 
 const teamId = newId();
 db.prepare("INSERT INTO teams (id, name) VALUES (?, ?)").run(teamId, "Website Redesign");
@@ -32,12 +55,7 @@ db.prepare("INSERT INTO boards (id, team_id, name) VALUES (?, ?, ?)").run(boardI
 const columns = ["To do", "In progress", "In review", "Done"];
 const columnIds = columns.map((name, i) => {
   const id = newId();
-  db.prepare("INSERT INTO columns (id, board_id, name, position) VALUES (?, ?, ?, ?)").run(
-    id,
-    boardId,
-    name,
-    (i + 1) * 1000,
-  );
+  db.prepare("INSERT INTO columns (id, board_id, name, position) VALUES (?, ?, ?, ?)").run(id, boardId, name, (i + 1) * 1000);
   return id;
 });
 
@@ -62,9 +80,9 @@ db.prepare("INSERT INTO activity (id, board_id, user_id, message) VALUES (?, ?, 
   newId(),
   boardId,
   owner,
-  "added card \"Build the auth screens\"",
+  'added card "Build the auth screens"',
 );
 
 const { n } = db.prepare("SELECT COUNT(*) AS n FROM cards").get() as { n: number };
-console.log(`Seeded ${n} cards`);
+console.log(`Seeded demo board with ${n} cards.`);
 console.log("Demo logins: owner@taskflow.dev / member@taskflow.dev, password: password123");
